@@ -1,0 +1,16 @@
+﻿@model IEnumerable<OnlineStore.Models.Database.Product>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<br />
+<div class="container">
+    <a href="/filter">Filtered search</a>
+</div>
+<br />
+<div class="card-columns">
+    @foreach (var i in Model)
+    {
+        @await Html.PartialAsync("_CardProduct", i);
+    }
+</div>
+

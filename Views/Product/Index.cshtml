@@ -1,0 +1,160 @@
+﻿@model OnlineStore.Models.ViewModel.ProductViewModel
+@{
+    ViewData["Title"] = "Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@Model.Product.Name</h1>
+<hr />
+<div>
+    @if (Model.CanEditProduct)
+    {
+    <div class="row">
+        <a class="btn btn-primary" asp-controller="Product" asp-action="Edit" asp-route-Id="@Model.Product.Id">Edit</a>
+    </div>
+    }
+    <div class="container" style="height: 300px">
+        <img class="h-100" src="/image/@Model.Product.Image.Path" />
+    </div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Brand
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Product.Producer
+        </dd>
+        <dt class="col-sm-2">
+            Model
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Product.Model
+        </dd>
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Product.Description
+        </dd>
+        <dt class="col-sm-2">
+            Category
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Product.Category.Name
+        </dd>
+        <dt class="col-sm-2">
+            Price
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Product.Price
+        </dd>
+        <dt class="col-sm-2">
+            Rate
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Product.AverageRate
+        </dd>
+        <dt class="col-sm-2">
+            Make rate
+        </dt>
+        <dd class="col-sm-10">
+            @if (User.Identity.IsAuthenticated) {
+                @if (!Model.Rated && Model.InPurchase)
+                {
+                    <input id="rate" type="number" max="5" min="1" value="0" />
+                    <a id="arate" class="btn btn-outline-info" href="/api/rate/@Model.Product.Id?rate=#&redirect=@Context.Request.Path">Rate</a>
+                }
+                else
+                {
+                    <input id="rate" type="number" max="0" min="5" alt="You can not rate the product" value="0" disabled />
+                    if (Model.Rated)
+                    {
+                        <a id="delrate" class="btn btn-outline-danger" href="/api/rate/remove/@Model.Product.Id?redirect=@Context.Request.Path">delete rate</a>
+                        }
+                    }
+                }
+        </dd>
+    </dl>
+    <script src="~/lib/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script>
+        $("#arate").click(function () {
+            let rate = $("#rate").val();
+            this.href = this.href.replace("#", rate);
+        });
+    </script>
+    <div class="form-group">
+        @if (User.Identity.IsAuthenticated)
+        {
+            @if (Model.InShopingCart)
+            {
+                <p>Is already in shopping cart</p>
+                <a class="btn btn-dark" href="/api/cart/remove/@Model.Product.Id?redirect=@Context.Request.Path">Remove from shopping cart</a>
+            }
+            else
+            {
+                <a class="btn btn-success" href="/api/cart/add/@Model.Product.Id?redirect=@Context.Request.Path">Add to shopping cart</a>
+            }
+        }
+    </div>
+    @if ((bool)Model.Product.CommentsEnabled)
+    {
+        <h1>Comments @Model.Comments.Count</h1>
+        <form>
+            @if (Model.InPurchase)
+            {
+                <fieldset>
+                    <div class="form-group">
+                        <label for="disabledTextInput">Comment</label>
+                        <input type="text" style="height:50px;" rows="4" id="commenttext" class="form-control" placeholder="Comment">
+                        <a id="makecomment" href="/api/comment/@Model.Product.Id?comment=#&redirect=@Context.Request.Path">Send</a>
+                    </div>
+                </fieldset>
+            }
+            else
+            {
+                <fieldset disabled>
+                    <div class="form-group">
+                        <label for="disabledTextInput">Comment</label>
+                        <input type="text" style="height:50px;" class="form-control" />
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </fieldset>
+            }
+            <script>
+                $("#makecomment").click(function () {
+                    let text = $("#commenttext").val();
+                    if (!text) { return false; }
+                    console.log(text);
+                    this.href = this.href.replace("#", text);
+                    console.log(this.href);
+                });
+            </script>
+        </form>
+        <div class="container">
+            @if (Model.Comments.Count != 0)
+            {
+                <hr />
+                @foreach (var i in Model.Comments)
+                {
+                    <div class="comment">
+                        <p>@i.User.Name @i.User.Surname</p>
+                    
+                        <p>@i.Text</p>
+                    </div>
+                    if (Model.CanEditComments)
+                    {
+                        <a class="btn btn-info"
+                           asp-controller="Product"
+                           asp-action="EditComment"
+                           asp-route-productId="@Model.Product.Id"
+                           asp-route-userId="@i.UserId">Edit Comment</a>
+                        <hr />
+                    }
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <h4>Comments was disabled for this product</h4>
+    }
+</div>
