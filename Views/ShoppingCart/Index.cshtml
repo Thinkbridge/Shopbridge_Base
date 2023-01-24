@@ -1,0 +1,71 @@
+﻿@model OnlineStore.Models.ViewModel.ShoppingCartModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Here are all your products</h1>
+<hr />
+<style>
+    .count-form{
+        margin: 4px;
+    }
+</style>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Count</td>
+                <td>Price</td>
+                <td>Delete</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model.ShoppingCarts)
+            {
+                <tr>
+                    <td><a href="/product/@i.ProductId">@i.Product.Name</a></td>
+                    <td>
+                        <input class="count-form" max="999" min="1" type="number" data-id="@i.ProductId" value="@i.Count" />
+                        <a class="btn btn-outline-dark count" href="/api/cart/add/@i.ProductId?count=#&redirect=@Context.Request.Path">Save</a>
+                    </td>
+                    <td>
+                        @(i.Product.Price * i.Count) $
+                    </td>
+                    <td>
+                        <a href="/api/cart/remove/@i.ProductId?&redirect=@Context.Request.Path">Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.TotalPrice != 0.0M)
+    {
+    <hr/>
+    <div class="container" >
+        <h3 class="align-content-lg-end" >
+            Price: @Model.TotalPrice $
+        </h3>
+    </div>
+    <div class="container" >
+        <a class="btn btn-lg btn-success" href="/purchase">Make purchase</a>
+    </div>
+    }
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js" ></script>
+<script>
+    $(".count").click(function () {
+        let input = this.previousElementSibling;
+        let count = input.value;
+        if (Math.sign(count) === 1) {
+            this.href = this.href.replace("#", count);
+        }
+        else {
+            this.stopPropagation();
+        }
+    });
+
+</script>
