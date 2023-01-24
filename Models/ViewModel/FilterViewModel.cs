@@ -9,20 +9,15 @@ namespace OnlineStore.Models.ViewModel
     public class FilterViewModel
     {
         public FilterViewModel(List<Category> categories,
-            int? category,
-            string name,
-            float? lowprice,
-            float? upprice,
-            float? lowrate
+            int? category       
+           
             )
         {
             categories.Insert(0, new Category() { Name="All", Id=0});
             Categories = new SelectList(categories, "Id", "Name", category);
             SelectedCategory = category;
-            SelectedName = name;
-            LowPrice = lowprice;
-            UpPrice = upprice;
-            LowRate = lowrate;
+         
+            
         }
         public SelectList Categories { get; private set; }
         public int? SelectedCategory { get; private set; }

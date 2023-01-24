@@ -59,7 +59,7 @@ namespace OnlineStore
             });
             app.UseAuthentication();
             app.UseAuthorization();
-
+         
             app.UseRouting();
 
             app.UseAuthorization();

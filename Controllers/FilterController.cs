@@ -18,21 +18,7 @@ namespace OnlineStore.Controllers
             {
                 products = products.Where(x => x.Category.Id == category);
             }
-            if(lowprice != null)
-            {
-                products = products.Where(x => x.Price > (decimal)lowprice);
-            }
-
-            if (upprice != null)
-            {
-                products = products.Where(x => x.Price < (decimal)upprice);
-            }
-
-            if (lowrate!= null)
-            {
-                products = products.Where(x => x.AverageRate >= lowrate);
-            }
-
+           
             if (!String.IsNullOrEmpty(name))
             {
                 products = products.Where(x => (x.Producer + x.Model + x.Description).ToLower().Contains(name.ToLower()));
@@ -41,25 +27,13 @@ namespace OnlineStore.Controllers
             {
                 case SortState.NameDesc:
                     products = products.OrderByDescending(x => x.Producer + x.Model);
-                    break;
-                case SortState.PriceAsc:
-                    products = products.OrderBy(x => x.Price);
-                    break;
-                case SortState.PriceDesc:
-                    products = products.OrderByDescending(x => x.Price);
-                    break;
+                    break;          
                 case SortState.CategoryAsc:
                     products = products.OrderBy(x => x.Category.Name);
                     break;
                 case SortState.CategoryDesc:
                     products = products.OrderByDescending(x => x.Category.Name);
-                    break;
-                case SortState.RateAsc:
-                    products = products.OrderBy(x => x.Rates.Sum(r => r.Score));
-                    break;
-                case SortState.RateDesc:
-                    products = products.OrderByDescending(x => x.AverageRate);
-                    break;
+                    break;         
                 default:
                     products = products.OrderBy(x => x.Producer + x.Model);
                     break;
@@ -74,11 +48,7 @@ namespace OnlineStore.Controllers
                 SortViewModel = new SortViewModel(sortOrder),
                 FilterViewModel = new FilterViewModel(
                     unit.CategoryRepository.Get().ToList(),
-                    category,
-                    name,
-                    lowprice,
-                    upprice,
-                    lowrate),
+                    category),
                 Products = items
             };
 
