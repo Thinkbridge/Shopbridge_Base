@@ -1,2 +1,10 @@
 # Shopbridge_Base
-This repository contains a .Net Standard 5 and C# solution, which can be used as a base to start upon, for the backend shopbridge assignment.
+Updated the folder zip with the project I have implemented.
+Let me know if you have any confusion while reviewing my code.
+
+Find ShopBridgeAPI-Flow.pdf for the flow diagram.
+I have uses Swagger for API Documentation.
+You can run the Api Local just provide the connection string and use Entity Framework.
+
+Cheers🥂
+Looking for the Feedback📝
